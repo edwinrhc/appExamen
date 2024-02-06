@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pe.com.examen.repository.GenericMapper">
+
+    
+    <resultMap id="combo" type="ComboModel">
+        <result property="codigo"		column="CODIGO" />
+        <result property="descripcion" 	column="DESCRIPCION" />
+    </resultMap>
+            
+    <parameterMap id="comboParams" type="hashmap">
+        <parameter property="COD_MAESTRO"         	jdbcType="VARCHAR"  mode="IN"/>
+        <parameter property="FLAG_RESULTADO"   		jdbcType="VARCHAR"  mode="OUT"/>
+        <parameter property="MENSAJE_RESULTADO"    	jdbcType="VARCHAR"  mode="OUT"/>
+    </parameterMap>
+        
+    
+    <select id="cargarCombo" parameterMap="comboParams" resultMap="combo" statementType="CALLABLE">
+      {CALL SP_CARGAR_COMBO_MAESTRO(?,?,?) }
+    </select>
+    
+    
+    
+</mapper>

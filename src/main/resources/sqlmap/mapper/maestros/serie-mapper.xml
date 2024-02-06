@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pe.com.examen.repository.maestros.SerieMapper">
+    
+    <!-- *************** RESULTMAPS ******************* -->
+    <resultMap id="serie" type="SerieModel">
+        <result property="codSerie"					column="COD_SERIE" />
+        <result property="tipoDocumento" 			column="COD_TIPO_DOCUMENTO" />
+        <result property="desTipoDocumento" 		column="DES_TIPO_DOCUMENTO" />        
+        <result property="nroSerie" 				column="NRO_SERIE" />
+        <result property="correlativo" 				column="CORRELATIVO" />
+        <result property="maxcorrelativo" 			column="MAX_CORRELATIVO" />
+        <result property="activo"		 			column="ACTIVO" />
+        <result property="codigoUsuarioRegistra" 	column="COD_USU_REGISTRA" />
+        <result property="fechaRegistro" 			column="FEC_REGISTRO" />
+        <result property="codigoUsuarioModifica" 	column="COD_USU_MODIFICA" />
+        <result property="fechaModificacion" 		column="FEC_MODIFICACION" />
+    </resultMap>
+        
+    <!-- ********************* PARAMETERMAPS ********************* -->
+    <parameterMap id="listarSerieParams" type="hashmap">
+    	<parameter property="DATO_BUSCAR"        	jdbcType="VARCHAR"  mode="IN"/>
+    	<parameter property="COD_TIPO_DOCUMENTO"       	jdbcType="VARCHAR"  mode="IN"/>
+        <parameter property="FLAG_RESULTADO"   		jdbcType="VARCHAR"  mode="OUT"/>
+        <parameter property="MENSAJE_RESULTADO"    	jdbcType="VARCHAR"  mode="OUT"/>
+    </parameterMap>
+    
+    <!-- ************************* QUERYS ******************************* -->
+    <select id="listarSerie" parameterMap="listarSerieParams" resultMap="serie" statementType="CALLABLE">
+    	{CALL SP_LISTAR_SERIES(?,?,?,?) }
+    </select>
+ <!-- ******************** INSERT *******************************-->
+    <insert id="GuardarSerie" parameterType="serieModel" >
+        INSERT INTO TBL_SERIE(
+                              V_COD_TIPO_DOCUMENTO,
+                              V_DESCRIPCION,
+                              V_NRO_SERIE,
+                              N_CORRELATIVO,
+                              N_MAX_CORRELATIVO,
+                              V_COD_USU_REGISTRA,
+                              N_ACTIVO,
+                              D_FEC_REGISTRO)
+        values (#{tipoDocumento}, #{descripcion}, #{nroSerie}, #{correlativo}, #{maxcorrelativo},'examen',1,NOW())
+    </insert>
+
+    <!--************************* UPDATE *************************************-->
+    <update id="editarSerie" parameterType="serieModel">
+        update tlb_serie set
+                             N_COD_SERIE = #{codSerie},
+                             v_COD_SERIE = #{tipoDocumento},
+                             N_ACTIVO = #{activo},
+                             V_DESCRIPCION = #{descripcion},
+                             V_NRO_SERIE = #{nroSerie},
+                             N_CORRELATIVO = #{correlativo},
+                             N_MAX_CORRELATIVO = #{maxcorrelativo},
+                             V_COD_USU_MODIFICA = 'examen',
+                             D_FEC_MODIFICACION = now()
+        where
+                N_COD_SERIE = #{codSerie}
+    </update>
+
+    <!--************************* MOSTRAR *************************************-->
+    <select id="obtenerSeriePorId" resultType="SerieModel" parameterType="SerieModel">
+        SELECT N_COD_SERIE codSerie,
+               V_COD_TIPO_DOCUMENTO tipoDocumento,
+               V_DESCRIPCION desTipoDocumento,
+               V_NRO_SERIE nroSerie,
+               N_CORRELATIVO correlativo,
+               N_MAX_CORRELATIVO maxcorrelativo
+        FROM TBL_SERIE WHERE V_NRO_SERIE = #{nroSerie}
+    </select>
+
+    <!--************************* VALIDAR *************************************-->
+    <select id="validarSerie" resultType="SerieModel" parameterType="SerieModel">
+        SELECT N_COD_SERIE codSerie,
+               V_COD_TIPO_DOCUMENTO tipoDocumento,
+               V_DESCRIPCION desTipoDocumento,
+               V_NRO_SERIE nroSerie,
+               N_CORRELATIVO correlativo,
+               N_MAX_CORRELATIVO maxcorrelativo
+        FROM TBL_SERIE WHERE V_NRO_SERIE  = #{nroSerie}
+    </select>
+
+</mapper>
