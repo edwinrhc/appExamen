@@ -18,8 +18,9 @@ import pe.com.examen.repository.maestros.SerieMapper;
 import pe.com.examen.service.maestros.SerieService;
 import pe.com.examen.util.Constante;
 import pe.com.examen.util.appExamenUtil;
+import pe.com.examen.wrapper.SerieWrapper;
 
-import javax.rmi.CORBA.Util;
+
 
 @Service
 public class SerieServiceImpl implements SerieService {
@@ -60,45 +61,6 @@ public class SerieServiceImpl implements SerieService {
 		return perfilList;
 	}
 
-
-	@Override
-	public void editar(SerieModel serie) throws Exception {
-
-		try{
-			serieMapper.editarSerie(serie);
-				logger.info("Se ha editado exitosamente la serie en la base de datos");
-		}catch (Exception ex)
-		{
-			logger.info("Error al intentar guardar la serie en la base datos"+ ex.getMessage());
-			throw new Exception("Error al intentar editar la serie en la base de datos");
-		}
-	}
-
-	@Override
-	public SerieModel obtenerSeriePorId(String id) {
-
-		// Log para indicar que se está intentando obtener la series
-		logger.info("Intentando obtener la serie con ID:" + id);
-
-		//Lógica para obtener la serie por su ID
-		 SerieModel serie = serieMapper.obtenerSeriePorId(id);
-
-		if(serie != null){
-			logger.info("Serie encontrada: "+ serie);
-		}else{
-			logger.error("No se encontró ninguna serie con ID: "+ id);
-		}
-
-		return null;
-	}
-
-	@Override
-	public SerieModel validarSerie(String nroSerie) {
-		return null;
-	}
-
-
-
 	@Override
 	public ResponseEntity<String> guardar(Map<String, String> requestMap) {
 
@@ -122,6 +84,29 @@ public class SerieServiceImpl implements SerieService {
 		}
 		return appExamenUtil.getResponseEntity(Constante.SOMETHING_WENT_WRONG,HttpStatus.INTERNAL_SERVER_ERROR);
 	}
+
+	@Override
+	public ResponseEntity<SerieModel> GetDetailsCodSerie(Integer codSerie) {
+
+		try {
+			logger.info("Iniciando el detalle del código");
+			return new ResponseEntity<>(serieMapper.obtenerDetallePorCodSerie(codSerie),HttpStatus.OK);
+		}catch (Exception ex){
+			ex.printStackTrace();
+		}
+			return new ResponseEntity<>(new SerieModel(),HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+
+
+	@Override
+	public SerieModel validarSerie(String nroSerie) {
+		return null;
+	}
+
+
+
+
 
 
 	private boolean validateSaveMap(Map<String, String> requestMap){

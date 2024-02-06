@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import pe.com.examen.model.SerieModel;
+import pe.com.examen.wrapper.SerieWrapper;
 
 @Repository
 @Transactional
@@ -19,7 +20,7 @@ public interface SerieMapper {
 
 	 void editarSerie(SerieModel serie);
 
-	 SerieModel obtenerSeriePorId(@Param("nroSerie") String nroSerie);
+	 SerieModel obtenerDetallePorCodSerie(@Param("codSerie") Integer codSerie);
 
 	 SerieModel validarSerie(String nroSerie);
 }

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import pe.com.examen.model.SerieModel;
+import pe.com.examen.wrapper.SerieWrapper;
 
 public interface SerieService {
 	
@@ -14,9 +15,11 @@ public interface SerieService {
 
 	ResponseEntity<String> guardar(Map<String,String> requestMap);
 
-	void editar(SerieModel serie) throws Exception;
+	ResponseEntity<SerieModel> GetDetailsCodSerie(Integer codSerie);
 
-	SerieModel obtenerSeriePorId(String id);
+//	void editar(SerieModel serie) throws Exception;
+
+	//SerieModel obtenerDetallePorCodSerie(Integer codSerie);
 
 	SerieModel validarSerie(String nroSerie);
 

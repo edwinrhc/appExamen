@@ -61,18 +61,18 @@
                 N_COD_SERIE = #{codSerie}
     </update>
 
-    <!--************************* MOSTRAR *************************************-->
-    <select id="obtenerSeriePorId" resultType="SerieModel" parameterType="SerieModel">
+    <!--************************* MOSTRAR POR ID *************************************-->
+    <select id="obtenerDetallePorCodSerie" resultType="SerieModel" parameterType="SerieModel">
         SELECT N_COD_SERIE codSerie,
                V_COD_TIPO_DOCUMENTO tipoDocumento,
                V_DESCRIPCION desTipoDocumento,
                V_NRO_SERIE nroSerie,
                N_CORRELATIVO correlativo,
                N_MAX_CORRELATIVO maxcorrelativo
-        FROM TBL_SERIE WHERE V_NRO_SERIE = #{nroSerie}
+        FROM TBL_SERIE WHERE N_COD_SERIE = #{codSerie}
     </select>
 
-    <!--************************* VALIDAR *************************************-->
+    <!--************************* VALIDAR LA SERIE *************************************-->
     <select id="validarSerie" resultType="SerieModel" parameterType="SerieModel">
         SELECT N_COD_SERIE codSerie,
                V_COD_TIPO_DOCUMENTO tipoDocumento,

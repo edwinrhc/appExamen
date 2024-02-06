@@ -1,9 +1,9 @@
 package pe.com.examen.controlador.restImpl.maestros;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import pe.com.examen.model.SerieModel;
+import pe.com.examen.wrapper.SerieWrapper;
 
 import java.util.Map;
 
@@ -12,4 +12,7 @@ public interface SerieRestImpl{
 
     @PostMapping(path = "/crear/")
     public ResponseEntity<String> guardar(@RequestBody(required = true)Map<String,String> requestMap);
+
+    @GetMapping(path="/verDetalle/{codSerie}/")
+    public ResponseEntity<SerieModel> detalle(@PathVariable Integer codSerie);
 }

@@ -18,6 +18,7 @@ import pe.com.examen.model.SerieModel;
 import pe.com.examen.service.maestros.SerieService;
 import pe.com.examen.util.Constante;
 import pe.com.examen.util.appExamenUtil;
+import pe.com.examen.wrapper.SerieWrapper;
 
 @RestController
 public class SerieRestController implements SerieRestImpl {
@@ -51,7 +52,22 @@ public class SerieRestController implements SerieRestImpl {
 		return appExamenUtil.getResponseEntity(Constante.RESULTADO_EXITOSO,HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
+	@Override
+	public ResponseEntity<SerieModel> detalle(Integer codSerie) {
 
+		try{
+			logger.info("Iniciando el detalle del código");
+			 return serieService.GetDetailsCodSerie(codSerie);
+		}catch (Exception ex)
+		{
+			ex.printStackTrace();
+		}
+		return new ResponseEntity<>(new SerieModel(),HttpStatus.INTERNAL_SERVER_ERROR);
+
+
+
+
+	}
 
 
 //	private boolean validarCampos(Map<String,String>requestMap){
