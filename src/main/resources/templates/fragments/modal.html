@@ -1,5 +1,6 @@
+<!-- Nuevo Registro Serie -->
 <th:block th:fragment="modal">
-<div class="modal fade" id="nuevoModal" tabindex="-1"  class="verModal"
+<div class="modal fade" id="nuevoModal" tabindex="-1"
      aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered  modal-lg">
         <div class="modal-content">
@@ -11,7 +12,6 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form id="formNuevaSerie">
                     <div class="row">
                         <div class="col-sm-4">
                             <label class="label" for="tipoDocumento">Tipo de
@@ -65,5 +65,142 @@
         </div>
     </div>
 </div>
+
+<!--    Ver detalle de la Serie-->
+    <div class="modal fade" id="detalleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered  modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Ver Serie</h5>
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <label class="label" for="campoDescripcion">Código: </label> <input class="form-control"
+                                                                                                type="text" id="codSerie" name="codSerie" disabled
+                                                                                                placeholder="" />
+                        </div>
+                        <div class="col-sm-4">
+                            <label class="label" for="tipoDocumentoVer">Tipo de
+                                documento</label> <select id="tipoDocumentoVer" class="form-control" name="tipoDocumentoVer" disabled>
+                            <option value="" selected>-- TODOS --</option>
+                            <option th:each="item : ${listaTipoDocumento}"
+                                    th:value="${item.codigo}" th:text="${item.descripcion}">
+                            </option>
+                        </select>
+                        </div>
+                        <div class="col-sm-3">
+                            <label class="label" for="activoVer">Activo: </label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="activoVer" name="activoVer" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <label class="label" for="desTipoDocumentoVer">Descripción: </label> <input class="form-control"
+                                                                                                        type="text" id="desTipoDocumentoVer" name="desTipoDocumentoVer" disabled
+                                                                                                        placeholder="" />
+                        </div>
+                        <div class="col-sm-3">
+                            <label class="label" for="nroSerieVer">Serie: </label> <input class="form-control"
+                                                                                          type="text" id="nroSerieVer" name="nroSerieVer"  disabled
+                                                                                          placeholder="" />
+                        </div>
+                        <div class="col-sm-3">
+                            <label class="label" for="correlativoVer">Correlativo: </label> <input class="form-control"
+                                                                                                   type="number" id="correlativoVer" name="correlativoVer"  disabled
+                                                                                                   placeholder="" />
+                        </div>
+                        <div class="col-sm-3">
+                            <label class="label" for="maxcorrelativoVer">Máx. Correlativo: </label> <input class="form-control"
+                                                                                                           type="number" id="maxcorrelativoVer" name="maxcorrelativoVer"  disabled
+                                                                                                           placeholder="" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">
+                        <i class="fas fa-times-circle"></i> Cerrar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--    Editar la Serie-->
+    <div class="modal fade" id="editarSerieModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered  modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Ver Serie</h5>
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <label class="label" for="codSerieEdit">Código: </label> <input class="form-control"
+                                                                                                type="text" id="codSerieEdit" name="codSerieEdit" disabled
+                                                                                                placeholder="" />
+                            </div>
+                            <div class="col-sm-4">
+                                <label class="label" for="tipoDocumentoEdit">Tipo de
+                                    documento</label> <select id="tipoDocumentoEdit" class="form-control" name="tipoDocumentoEdit" disabled>
+                                <option value="" selected>-- TODOS --</option>
+                                <option th:each="item : ${listaTipoDocumento}"
+                                        th:value="${item.codigo}" th:text="${item.descripcion}">
+                                </option>
+                            </select>
+                            </div>
+                            <div class="col-sm-3">
+                                <label class="label" for="activoEdit">Activo: </label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="activoEdit" name="activoEdit" >
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <label class="label" for="desTipoDocumentoEdit">Descripción: </label> <input class="form-control"
+                                                                                                             type="text" id="desTipoDocumentoEdit" name="desTipoDocumentoEdit"
+                                                                                                             placeholder="" />
+                            </div>
+                            <div class="col-sm-3">
+                                <label class="label" for="nroSerieEdit">Serie: </label> <input class="form-control"
+                                                                                               type="text" id="nroSerieEdit" name="nroSerieEdit"   maxlength="4"
+                                                                                               placeholder="" />
+                            </div>
+                            <div class="col-sm-3">
+                                <label class="label" for="correlativoEdit">Correlativo: </label> <input class="form-control"
+                                                                                                        type="number" id="correlativoEdit" name="correlativoEdit"
+                                                                                                        placeholder="" />
+                            </div>
+                            <div class="col-sm-3">
+                                <label class="label" for="maxcorrelativoEdit">Máx. Correlativo: </label> <input class="form-control"
+                                                                                                                type="number" id="maxcorrelativoEdit" name="maxcorrelativoEdit"
+                                                                                                                placeholder="" />
+                            </div>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary"  onclick="editarSerie()">
+                        <i class="fas fa-save"></i> Guardar
+                    </button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">
+                        <i class="fas fa-times-circle"></i> Cerrar
+                    </button>
+                </div>
+            </div>
+            </form>
+        </div>
+    </div>
+    <!--  FIN EDITAR -->
 
 </th:block>

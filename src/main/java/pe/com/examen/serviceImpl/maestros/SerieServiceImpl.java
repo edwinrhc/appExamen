@@ -61,29 +61,51 @@ public class SerieServiceImpl implements SerieService {
 		return perfilList;
 	}
 
-	@Override
-	public ResponseEntity<String> guardar(Map<String, String> requestMap) {
-
-		logger.info("Iniciado crear serviceImpl {} ",requestMap);
-		try {
-			if(validateSaveMap(requestMap)){
-				SerieModel serieModel = serieMapper.validarSerie(requestMap.get("nroSerie"));
-				logger.info("Obteniendo el ID de nro serie", serieModel);
-				if(Objects.isNull(serieModel)){
-					serieMapper.GuardarSerie(getSerieFromMap(requestMap));
-					return appExamenUtil.getResponseEntity(Constante.RESULTADO_EXITOSO, HttpStatus.OK);
-				}else{
-					return appExamenUtil.getResponseEntity(Constante.RESULTADO_ERROR_SERIE, HttpStatus.BAD_REQUEST);
-				}
-			}else{
-				return appExamenUtil.getResponseEntity(Constante.INVALID_DATA,HttpStatus.BAD_REQUEST);
+//	@Override
+//	public ResponseEntity<String> guardar(Map<String, String> requestMap) {
+//		logger.info("Iniciado crear serviceImpl {} ",requestMap);
+//		try {
+//			if(validateSaveMap(requestMap)){
+//				SerieModel serieModel = serieMapper.validarSerie(requestMap.get("nroSerie"));
+//				logger.info("Obteniendo el ID de nro serie", serieModel);
+//				if(Objects.isNull(serieModel)){
+//					serieMapper.GuardarSerie(getSerieFromMap(requestMap));
+//					return appExamenUtil.getResponseEntity(Constante.RESULTADO_EXITOSO, HttpStatus.OK);
+//				}else{
+//					//Aquí muestra el error cuando la serie, ya se encuentra en la base de datos
+//					return appExamenUtil.getResponseEntity(Constante.RESULTADO_ERROR_SERIE, HttpStatus.BAD_REQUEST);
+//				}
+//			}else{
+//				return appExamenUtil.getResponseEntity(Constante.INVALID_DATA,HttpStatus.BAD_REQUEST);
+//			}
+//		}catch (Exception ex){
+//			ex.printStackTrace();
+//		}
+//		return appExamenUtil.getResponseEntity(Constante.SOMETHING_WENT_WRONG,HttpStatus.INTERNAL_SERVER_ERROR);
+//	}
+@Override
+public ResponseEntity<String> guardar(Map<String, String> requestMap) {
+	logger.info("Iniciado crear serviceImpl {} ", requestMap);
+	try {
+		if (validateSaveMap(requestMap)) {
+			SerieModel serieModel = serieMapper.validarSerie(requestMap.get("nroSerie"));
+			logger.info("Obteniendo el ID de nro serie", serieModel);
+			if (Objects.isNull(serieModel)) {
+				serieMapper.GuardarSerie(getSerieFromMap(requestMap));
+				return appExamenUtil.getResponseEntity(Constante.RESULTADO_EXITOSO, HttpStatus.OK);
+			} else {
+				// Aquí muestra el error cuando la serie ya se encuentra en la base de datos
+				return appExamenUtil.getResponseEntity(Constante.RESULTADO_ERROR_SERIE, HttpStatus.BAD_REQUEST);
 			}
-
-		}catch (Exception ex){
-			ex.printStackTrace();
+		} else {
+			return appExamenUtil.getResponseEntity(Constante.INVALID_DATA, HttpStatus.BAD_REQUEST);
 		}
-		return appExamenUtil.getResponseEntity(Constante.SOMETHING_WENT_WRONG,HttpStatus.INTERNAL_SERVER_ERROR);
+	} catch (Exception ex) {
+		ex.printStackTrace();
 	}
+	return appExamenUtil.getResponseEntity(Constante.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+}
+
 
 	// Primer Metodo
 	@Override

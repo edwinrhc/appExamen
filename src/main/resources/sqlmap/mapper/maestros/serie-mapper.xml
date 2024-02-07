@@ -65,6 +65,7 @@
     <select id="obtenerDetallePorCodSerie" resultType="SerieModel" parameterType="SerieModel">
         SELECT N_COD_SERIE codSerie,
                V_COD_TIPO_DOCUMENTO tipoDocumento,
+               N_ACTIVO activo,
                V_DESCRIPCION desTipoDocumento,
                V_NRO_SERIE nroSerie,
                N_CORRELATIVO correlativo,

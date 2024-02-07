@@ -40,23 +40,35 @@ public class SerieRestController implements SerieRestImpl {
             return new ResponseEntity<List<SerieModel>>(serieList, HttpStatus.OK);   
     }
 
+// Primer método
+//	public ResponseEntity<String> guardar(Map<String, String> requestMap){
+//		try {
+//			logger.info("Iniciando desde SerieResController");
+//			return serieService.guardar(requestMap);
+//		}catch (Exception ex)
+//		{
+//			ex.printStackTrace();
+//			return appExamenUtil.getResponseEntity(Constante.RESULTADO_ERROR_SERIE,HttpStatus.INTERNAL_SERVER_ERROR);
+//		}
+//	}
 
 	public ResponseEntity<String> guardar(Map<String, String> requestMap){
 		try {
 			logger.info("Iniciando desde SerieResController");
-			return serieService.guardar(requestMap);
-		}catch (Exception ex)
-		{
+			ResponseEntity<String> response = serieService.guardar(requestMap);
+			logger.info(response + " <== Veremos que pasa");
+			return response;
+		} catch (Exception ex) {
 			ex.printStackTrace();
+			return appExamenUtil.getResponseEntity(Constante.RESULTADO_ERROR_SERIE,HttpStatus.OK);
 		}
-		return appExamenUtil.getResponseEntity(Constante.RESULTADO_EXITOSO,HttpStatus.INTERNAL_SERVER_ERROR);
 	}
+
 
 	@Override
 	public ResponseEntity<String> editar(Map<String,String> requestMap) {
 		try {
 			logger.info("Iniciando el método Editar Serie");
-
 			return serieService.editar(requestMap);
 		}catch (Exception ex)
 		{

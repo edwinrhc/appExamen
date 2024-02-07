@@ -11,7 +11,10 @@ var dataTableSerie;
 
 
 // campos de formulario Nuevo Registro
+let codSerie;
 let tipoDocumentoSunat;
+let activo;
+let desTipoDocumento;
 let descripcion;
 let nroSerie;
 let correlativo;
@@ -27,10 +30,31 @@ $(document).ready(function() {
 });
 
 $(document).on('click', '#btn-view', function() {
-    // var serieId = $(this).data('id');
-    // mostrarDetallesModal(serieId);
-    verDetalle();
+     var serieId = $(this).data('id');
+    verDetalle(serieId, 'detalle');
+    //verDetalle();
 });
+$(document).on('click', '#btn-edit', function() {
+    var serieId = $(this).data('id');
+    verDetalle(serieId, 'editar');
+
+});
+
+
+$(document).ready(function() {
+    // Agregar evento change al checkbox
+    $("#miCheckbox").change(function() {
+        // Verificar si el checkbox está marcado
+        if ($(this).is(":checked")) {
+            // Agregar la clase de estilo a la celda
+            $(this).closest("tr").find(".text-danger").addClass("text-danger-custom");
+        } else {
+            // Remover la clase de estilo de la celda
+            $(this).closest("tr").find(".text-danger").removeClass("text-danger-custom");
+        }
+    });
+});
+
 
 function inicializarVariables(){
 	formSerie = $('#formSerie');
@@ -60,7 +84,6 @@ function inicializarEventos(){
 		buscar();
 	});
 }
-
 
 function inicializarTabla(){
 	
@@ -123,7 +146,19 @@ function inicializarTabla(){
                     "width": "3px",
                     "targets": [6],
                     "data": "activo",
-                    className: "dt-body-center text-center"
+                    className: "dt-body-center text-center",
+                    "render": function (data, type, row){
+                        if(type === 'display'){
+                            if(data == 1){
+                                return '<div class="form-check dt-body-center"><input class="form-check-input checkbox-activo" type="checkbox" checked><label class="form-check-label"></label></div>';
+                            }else{
+                                return '<div class="form-check dt-body-center"><input class="form-check-input checkbox-activo" type="checkbox"><label class="form-check-label"></label></div>';
+                            }
+
+                        }else{
+                            return data;
+                        }
+                    }
             	},
                 {
                     "width": "20px",
@@ -135,8 +170,8 @@ function inicializarTabla(){
                     	return  "<div style='display:flex;justify-content:space-around;'>" +
                         			"<button id='btn-view' title='Ver' class='btn-view btn btn-info btn-xs' data-id='"+ row.codSerie +"'>" +
 							                    "<span><i class=\"fas fa-eye\"></i></span>" +
-							                "</button>" +											
-							                "<button title='Modificar' class='btn-edit btn btn-primary btn-xs' data-id='"+ row.codSerie +"'>" +
+							                "</button>" +
+							                "<button id='btn-edit' title='Modificar' class='btn-edit btn btn-primary btn-xs' data-id='"+ row.codSerie +"'>" +
                                                 "<span><i class=\"fas fa-edit\"></i></span>" +
                                             "</button>" +
 				                "</div>";
@@ -154,11 +189,31 @@ function inicializarTabla(){
                  },
              "language"  : {
                 "url": "/appExamen/language/Spanish.json"
+            },
+            "createdRow": function (row, data, dataIndex) {
+                var checkbox = $(row).find('.checkbox-activo');
+                if (data.activo === 0) {
+                    checkbox.prop('checked', false);
+                    $(row).css('background-color', 'orange').css('color', 'red').css('font-weight', 'bold');
+                } else {
+                    checkbox.prop('checked', true);
+                    $(row).css('background-color', '').css('color', '');
+                }
             }
     });
-	
-}
 
+    // Agregar evento de cambio para el checkbox
+    tablaSerie.on('change', '.checkbox-activo', function() {
+        var fila = $(this).closest('tr'); // Obtener la fila actual
+        if (!this.checked) {
+            fila.css('background-color', 'orange').css('color', 'red').css('font-weight', 'bold');
+        } else {
+            fila.css('background-color', '').css('color', '');
+        }
+    });
+
+
+}
 
 
 /**************** FUNCIONES DE SOPORTE ***********************************************************
@@ -192,11 +247,10 @@ function manejarModal() {
 }
 
 function guardarSerie(){
-    console.log("Iniciando el formulario modal")
-    //Obtener los valores de los campos del formulario
+
     tipoDocumentoSunat = $("#tipoDocumentoSunat option:selected").val();
-    descripcion = $("#descripcion").val();
-    nroSerie = $("#nroSerie").val();
+    descripcion = $("#descripcion").val().toUpperCase();
+    nroSerie = $("#nroSerie").val().toUpperCase();
     correlativo = parseInt($("#correlativo").val());
     maxCorrelativo = parseInt($("#maxcorrelativo").val());
     //Creamos un objeto con los datos a enviar al servidor
@@ -207,67 +261,188 @@ function guardarSerie(){
         correlativo:correlativo,
         maxcorrelativo:maxCorrelativo
     };
-    console.log("Datos a enviar al servidor: ",datos);
-    var settings =  {
-        "url": "http://localhost:8085/appExamen/crear/",
+    var settings = {
+        "url": "/appExamen/crear/",
         "method": "POST",
         "timeout": 0,
         "headers": {
-             "Content-Type": "application/json"
+            "Content-Type": "application/json"
         },
-         "data":JSON.stringify(datos),
-        "success": function(response){
+        "data": JSON.stringify(datos),
+        "success": function (response) {
             // Verificar el resultado del servidor
             if (response) {
-                // Mostrar SweetAlert para un registro exitos
+        //        Mostrar SweetAlert para un registro exitos
                 Swal.fire({
                     icon: 'success',
                     title: '¡Registro exitoso!',
                     showConfirmButton: false,
-                    text: response.message,
+                    text: "Se registro correctamente",
                     timer: 1500
-                }).then(function() {
+                }).then(function () {
                     // Ocultar el modal después del registro exitoso
                     $("#nuevoModal").modal("hide");
                     // Recargar la página para mostrar los cambios
-                    // window.location.reload();
+                    window.location.reload();
                 });
-            } else {
-                // Mostrar SweetAlert para un error
-                console.log("Que dice en response ERROR" , response);
+            }
+        },
+        "error": function (xhr, status, error) {
+            var errorMessage = xhr.responseText;
+            {
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
                     showConfirmButton: false,
-                    text: response.message
+                    text: "Esta serie ya fue registrada"
                 });
+
             }
-        },
-        "error": function (xhr,status,error){
-            var errorMessage = xhr.responseText;
-            alert(errorMessage);
         }
     };
     $.ajax(settings)
-        .done(function(response, textStatus, xhr) {
-            // Acceder al código de estado HTTP
-            var statusCode = xhr.status;
-            if (statusCode === 200) {
-                // La solicitud fue exitosa, manejarla aquí
-                console.log("La solicitud fue exitosa");
-            } else {
-                // La solicitud tuvo un error, manejarlo aquí
-                console.error("La solicitud tuvo un error: " + statusCode);
-            }
-        })
-        .fail(function(xhr, textStatus, errorThrown) {
-            // Si la solicitud AJAX falla por completo
-            console.error("Error en la solicitud AJAX: " + errorThrown);
-        });
 }
 
-function verDetalle(){
-    $("#nuevoModal").show();
+function editarSerie(){
+
+    codSerie = $("#codSerieEdit").val();
+    tipoDocumentoEdit = $("#tipoDocumentoEdit").val();
+    activo = $("#activoEdit").prop('checked') ? 1:0;
+    descripcion = $("#desTipoDocumentoEdit").val().toUpperCase();
+    nroSerie = $("#nroSerieEdit").val().toUpperCase();
+    correlativo = $("#correlativoEdit").val();
+    maxCorrelativo = $("#maxcorrelativoEdit").val();
+
+    //Creamos un objeto con los datos a enviar al servidor
+    var datos = {
+        codSerie: codSerie,
+        tipoDocumento: tipoDocumentoEdit,
+        activo: activo,
+        descripcion: descripcion,
+        nroSerie: nroSerie,
+        correlativo: correlativo,
+        maxcorrelativo: maxCorrelativo
+    };
+
+
+    $.ajax({
+        url: '/appExamen/editar/',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(datos),
+
+        success: function (response) {
+
+           // console("Datos ==>", datos);
+            console.log("Respuesta del servidor aqi: =>", response); // Agrega esta línea para verificar la respuesta del servidor
+
+            // Verificar el resultado del servidor
+            if (response) {
+                //        Mostrar SweetAlert para un registro exitos
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Actualización!',
+                    showConfirmButton: false,
+                    text: "Se actualizó correctamente",
+                    timer: 1500
+                }).then(function () {
+                    // Ocultar el modal después del registro exitoso
+                    $("#editarSerieModal").modal("hide");
+                    // Recargar la página para mostrar los cambios
+                    window.location.reload();
+                });
+            }
+        },
+        error: function (xhr, status, error) {
+            var errorMessage = xhr.responseText;
+            {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    showConfirmButton: false,
+                    text: "Esta serie ya fue registrada"
+                });
+
+            }
+        }
+
+    })
+
+}
+
+function verDetalle(serieId, modalType){
+    // Abrir el modal al hacer clic en el botón
+    console.log("ID de serie a buscar" + serieId);
+
+    $.ajax({
+        url: '/appExamen/verDetalle/' + serieId,
+        method: 'GET',
+        success: function (response){
+
+            // Determina qué modal abrir
+            if(modalType === 'detalle'){
+                console.log("Response detalle: => ", response);
+                // Llena el modal con los detalles de la serie
+                $('#codSerie').val(response.codSerie);
+                $('#tipoDocumentoVer').val(response.tipoDocumento);
+                $('#desTipoDocumentoVer').val(response.desTipoDocumento);
+                $('#activoVer').prop('checked',response.activo);
+                $('#nroSerieVer').val(response.nroSerie);
+                $('#correlativoVer').val(response.correlativo);
+                $('#maxcorrelativoVer').val(response.maxcorrelativo);
+                $('#detalleModal').modal('show');
+
+            } else if (modalType === 'editar'){
+                console.log("Response editar: => ", response);
+                $('#codSerieEdit').val(response.codSerie);
+                $('#tipoDocumentoEdit').val(response.tipoDocumento);
+                $('#activoEdit').prop('checked',response.activo);
+                $('#desTipoDocumentoEdit').val(response.desTipoDocumento);
+                $('#nroSerieEdit').val(response.nroSerie);
+                $('#correlativoEdit').val(response.correlativo);
+                $('#maxcorrelativoEdit').val(response.maxcorrelativo);
+
+                $('#editarSerieModal').modal('show');
+            }
+        },
+        "error": function (xhr, status, error) {
+            var errorMessage = xhr.responseText;
+            {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    showConfirmButton: false,
+                    text: "Esta serie ya fue registrada"
+                });
+
+            }
+        }
+    });
+
+}
+
+function validarCampos() {
+    var campos = [
+        { id: "#descripcion", mensaje: "Por favor ingresa una descripción." },
+        // Agrega más campos según sea necesario
+    ];
+
+
+    var valido = true;
+
+    campos.forEach(function(campo) {
+        var valor = $(campo.id).val().trim();
+        if (valor === '') {
+            $(campo.id).addClass("is-invalid");
+            $(campo.id).next(".invalid-feedback").text(campo.mensaje);
+            valido = false;
+        } else {
+            $(campo.id).removeClass("is-invalid");
+            $(campo.id).next(".invalid-feedback").text("");
+        }
+    });
+
+
 }
 
 

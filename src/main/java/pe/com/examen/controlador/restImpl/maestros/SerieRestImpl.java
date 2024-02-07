@@ -16,7 +16,7 @@ public interface SerieRestImpl{
     @PostMapping(path="/editar/")
     public ResponseEntity<String> editar(@RequestBody(required = true)Map<String,String> requestMap);
 
-    @GetMapping(path="/verDetalle/{codSerie}/")
+    @GetMapping(path="/verDetalle/{codSerie}")
     public ResponseEntity<SerieModel> detalle(@PathVariable Integer codSerie);
 
 
