@@ -26,6 +26,12 @@ $(document).ready(function() {
 	inicializarPantalla();
 });
 
+$(document).on('click', '#btn-view', function() {
+    // var serieId = $(this).data('id');
+    // mostrarDetallesModal(serieId);
+    verDetalle();
+});
+
 function inicializarVariables(){
 	formSerie = $('#formSerie');
 	campoBuscar = $('#campoBuscar');
@@ -127,10 +133,10 @@ function inicializarTabla(){
 					"render":
                     function (data, type, row ) {
                     	return  "<div style='display:flex;justify-content:space-around;'>" +
-                        			"<button title='Ver' class='btn-view btn btn-info btn-xs'>" +
+                        			"<button id='btn-view' title='Ver' class='btn-view btn btn-info btn-xs' data-id='"+ row.codSerie +"'>" +
 							                    "<span><i class=\"fas fa-eye\"></i></span>" +
 							                "</button>" +											
-							                "<button title='Modificar' class='btn-edit btn btn-primary btn-xs'>" +
+							                "<button title='Modificar' class='btn-edit btn btn-primary btn-xs' data-id='"+ row.codSerie +"'>" +
                                                 "<span><i class=\"fas fa-edit\"></i></span>" +
                                             "</button>" +
 				                "</div>";
@@ -258,8 +264,10 @@ function guardarSerie(){
             // Si la solicitud AJAX falla por completo
             console.error("Error en la solicitud AJAX: " + errorThrown);
         });
+}
 
-
+function verDetalle(){
+    $("#nuevoModal").show();
 }
 
 

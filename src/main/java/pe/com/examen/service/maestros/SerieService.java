@@ -15,7 +15,10 @@ public interface SerieService {
 
 	ResponseEntity<String> guardar(Map<String,String> requestMap);
 
+	ResponseEntity<String> editar(Map<String,String> requestMap);
+
 	ResponseEntity<SerieModel> GetDetailsCodSerie(Integer codSerie);
+
 
 //	void editar(SerieModel serie) throws Exception;
 

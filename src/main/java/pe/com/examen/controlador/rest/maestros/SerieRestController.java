@@ -53,6 +53,21 @@ public class SerieRestController implements SerieRestImpl {
 	}
 
 	@Override
+	public ResponseEntity<String> editar(Map<String,String> requestMap) {
+		try {
+			logger.info("Iniciando el método Editar Serie");
+
+			return serieService.editar(requestMap);
+		}catch (Exception ex)
+		{
+			ex.printStackTrace();
+			return appExamenUtil.getResponseEntity(Constante.RESULTADO_EXITOSO,HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+	}
+
+
+	@Override
 	public ResponseEntity<SerieModel> detalle(Integer codSerie) {
 
 		try{
@@ -64,10 +79,9 @@ public class SerieRestController implements SerieRestImpl {
 		}
 		return new ResponseEntity<>(new SerieModel(),HttpStatus.INTERNAL_SERVER_ERROR);
 
-
-
-
 	}
+
+
 
 
 //	private boolean validarCampos(Map<String,String>requestMap){

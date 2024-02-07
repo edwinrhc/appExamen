@@ -47,9 +47,9 @@
 
     <!--************************* UPDATE *************************************-->
     <update id="editarSerie" parameterType="serieModel">
-        update tlb_serie set
+        update TBL_SERIE set
                              N_COD_SERIE = #{codSerie},
-                             v_COD_SERIE = #{tipoDocumento},
+                             V_COD_TIPO_DOCUMENTO = #{tipoDocumento},
                              N_ACTIVO = #{activo},
                              V_DESCRIPCION = #{descripcion},
                              V_NRO_SERIE = #{nroSerie},
@@ -81,6 +81,7 @@
                N_CORRELATIVO correlativo,
                N_MAX_CORRELATIVO maxcorrelativo
         FROM TBL_SERIE WHERE V_NRO_SERIE  = #{nroSerie}
+            LIMIT 1
     </select>
 
 </mapper>

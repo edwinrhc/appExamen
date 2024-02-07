@@ -29,18 +29,18 @@ public class SerieServiceImpl implements SerieService {
 
 	@Autowired
 	private SerieMapper serieMapper;
-	
+
 	@Override
 	public List<SerieModel> listarSeries(String datoBuscar, String tipoDocumento) throws Exception {
 
 		Map<String, Object> params = new HashMap();
 		params.put(Constante.PARAM_SP_DATO_BUSCAR, datoBuscar);
 		params.put(Constante.PARAM_SP_COD_TIPO_DOCUMENTO, tipoDocumento);
-		
+
 		logger.info("params ===> " + params);
 
 		List<SerieModel> perfilList = serieMapper.listarSerie(params);
-		
+
 		String flagResultado = (String) params.get(Constante.PARAM_FLAG_RESULTADO);
 		String mensajeResultado = (String) params.get(Constante.PARAM_MENSAJE_RESULTADO);
 
@@ -85,9 +85,36 @@ public class SerieServiceImpl implements SerieService {
 		return appExamenUtil.getResponseEntity(Constante.SOMETHING_WENT_WRONG,HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
+	// Primer Metodo
+	@Override
+	public ResponseEntity<String> editar(Map<String, String> requestMap) {
+			logger.info("Iniciando la edición de la serie en el ServiceImpl", requestMap);
+		try{
+			if(validateSaveMap(requestMap)){
+					if(requestMap.containsKey("codSerie") && requestMap.get("codSerie") != null){
+						Integer codSerie = Integer.valueOf(requestMap.get("codSerie"));
+						SerieModel serieModel = serieMapper.validarSerie(requestMap.get("nroSerie"));
+						logger.info("Obteniendo el número de Serie", serieModel);
+						//Verificar si el número de serie está repetido, excluyendo el registro actual
+						if(Objects.isNull(serieModel) || serieModel.getCodSerie().equals(codSerie)){
+							serieMapper.editarSerie(getSerieFromMap(requestMap));
+							return appExamenUtil.getResponseEntity(Constante.RESULTADO_EXITOSO,HttpStatus.OK);
+						}else {
+							return appExamenUtil.getResponseEntity("El  codSerie se encuentra en la base de datos", HttpStatus.BAD_REQUEST);
+						}
+					}else{
+						return appExamenUtil.getResponseEntity("El campo codSerie es requerido", HttpStatus.BAD_REQUEST);
+					}
+			}
+		}catch (Exception ex)
+		{
+			ex.printStackTrace();
+		}
+		return appExamenUtil.getResponseEntity(Constante.SOMETHING_WENT_WRONG,HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
 	@Override
 	public ResponseEntity<SerieModel> GetDetailsCodSerie(Integer codSerie) {
-
 		try {
 			logger.info("Iniciando el detalle del código");
 			return new ResponseEntity<>(serieMapper.obtenerDetallePorCodSerie(codSerie),HttpStatus.OK);
@@ -106,9 +133,6 @@ public class SerieServiceImpl implements SerieService {
 
 
 
-
-
-
 	private boolean validateSaveMap(Map<String, String> requestMap){
 
 		if(requestMap.containsKey("nroSerie"))
@@ -118,6 +142,16 @@ public class SerieServiceImpl implements SerieService {
 
 	private SerieModel getSerieFromMap(Map<String,String> requestMap){
 		SerieModel serieModel = new SerieModel();
+		//Verificar que el campo CodSerie no este vacía
+		String codSerieStr = requestMap.get("codSerie");
+		if(codSerieStr != null){
+			serieModel.setCodSerie(Integer.valueOf(codSerieStr));
+		}
+		String activoStr = requestMap.get("activo");
+		if(activoStr != null){
+			serieModel.setActivo(Integer.valueOf(activoStr));
+		}
+
 		serieModel.setTipoDocumento(requestMap.get("tipoDocumento"));
 		serieModel.setDesTipoDocumento(requestMap.get("desTipoDocumento"));
 		serieModel.setDescripcion(requestMap.get("descripcion"));
