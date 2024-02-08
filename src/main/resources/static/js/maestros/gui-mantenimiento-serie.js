@@ -247,12 +247,36 @@ function manejarModal() {
 }
 
 function guardarSerie(){
+    limpiarErrores();
 
     tipoDocumentoSunat = $("#tipoDocumentoSunat option:selected").val();
     descripcion = $("#descripcion").val().toUpperCase();
     nroSerie = $("#nroSerie").val().toUpperCase();
     correlativo = parseInt($("#correlativo").val());
     maxCorrelativo = parseInt($("#maxcorrelativo").val());
+
+    // Realiza todas las validaciones
+    var errores = [];
+
+    // Valida cada campo usando el switch
+    errores.push({ selector: "#tipoDocumentoSunat", mensaje: validarCampo("#tipoDocumentoSunat", tipoDocumentoSunat) });
+    errores.push({ selector: "#descripcion", mensaje: validarCampo("#descripcion", descripcion) });
+    errores.push({ selector: "#nroSerie", mensaje: validarCampo("#nroSerie", nroSerie) });
+    errores.push({ selector: "#correlativo", mensaje: validarCampo("#correlativo", correlativo) });
+    errores.push({ selector: "#maxcorrelativo", mensaje: validarCampo("#maxcorrelativo", maxCorrelativo) });
+
+    // Filtra los errores no nulos
+    errores = errores.filter(function(error) {
+        return error.mensaje !== null;
+    });
+    // Si hay errores, muestra los mensajes y detén el proceso
+    if (errores.length > 0) {
+        errores.forEach(function(error) {
+            mostrarError(error.selector, error.mensaje);
+        });
+        return;
+    }
+
     //Creamos un objeto con los datos a enviar al servidor
     var datos = {
         tipoDocumento:tipoDocumentoSunat,
@@ -304,6 +328,7 @@ function guardarSerie(){
 }
 
 function editarSerie(){
+
 
     codSerie = $("#codSerieEdit").val();
     tipoDocumentoEdit = $("#tipoDocumentoEdit").val();
@@ -421,28 +446,38 @@ function verDetalle(serieId, modalType){
 
 }
 
-function validarCampos() {
-    var campos = [
-        { id: "#descripcion", mensaje: "Por favor ingresa una descripción." },
-        // Agrega más campos según sea necesario
-    ];
 
-
-    var valido = true;
-
-    campos.forEach(function(campo) {
-        var valor = $(campo.id).val().trim();
-        if (valor === '') {
-            $(campo.id).addClass("is-invalid");
-            $(campo.id).next(".invalid-feedback").text(campo.mensaje);
-            valido = false;
-        } else {
-            $(campo.id).removeClass("is-invalid");
-            $(campo.id).next(".invalid-feedback").text("");
-        }
-    });
-
-
+function validarCampo(selector, valor) {
+    switch (selector) {
+        case "#tipoDocumentoSunat":
+            return valor ? null : "Debe ingresar un Tipo de documento.";
+        case "#descripcion":
+            return valor ? null : "Debe ingresar una descripción.";
+        case "#nroSerie":
+            // Agrega tu lógica de validación para el campo nroSerie aquí
+            return valor ? null : "Debe ingresar el nro de serie."; // Retorna null si la validación es exitosa
+        case "#correlativo":
+            // Agrega tu lógica de validación para el campo correlativo aquí
+            return valor? null :"Debe ingresar el correlativo."; // Retorna null si la validación es exitosa
+        case "#maxcorrelativo":
+            // Agrega tu lógica de validación para el campo maxcorrelativo aquí
+            return valor? null : "Debe de ingresar el maxCorrelativo."; // Retorna null si la validación es exitosa
+        default:
+            return "Campo no reconocido.";
+    }
 }
 
+
+function mostrarError(selector, mensaje) {
+    // Elimina cualquier mensaje de error anterior
+    $(selector).next(".error-message").remove();
+    // Agrega el mensaje de error debajo del campo
+    $(selector).after("<div class='error-message text-danger'>" + mensaje + "</div>");
+    $(selector).addClass("border border-danger");
+}
+
+function limpiarErrores() {
+    $(".error-message").remove();
+    $(".border-danger").removeClass("border-danger");
+}
 
